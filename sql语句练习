@@ -1,0 +1,200 @@
+//命令行通过管理员身份打开输入
+mysql -u root -p		
+
+//显示数据库
+ show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| java_14            |
+| mysql              |
+| performance_schema |
+| sys                |
+| test               |
++--------------------+
+6 rows in set (0.18 sec)
+		
+//通过使用数据库 对库里的内容进行操作		
+use java_14
+Database changed
+
+//创建表			
+create table student
+(
+name varchar(20),
+sn int,
+mysql int,
+english double(5,2),
+java smallint
+);
+
+//显示表信息
+show tables;
++-------------------+
+| Tables_in_java_14 |
++-------------------+
+| student           |
++-------------------+
+1 row in set (0.05 sec)
+
+//新增(create)
+ insert into student(name) values('lily');
+Query OK, 1 row affected (0.11 sec)
+
+
+insert into student (mysql,english,java)
+ values(100,99,100),
+(99,88,99),
+(99,78,88),
+(89,78,98),
+(87,80,97)
+;
+
+
+//查询数据库
+ select english,mysql,java from student;
++---------+-------+------+
+| english | mysql | java |
++---------+-------+------+
+|    NULL |  NULL | NULL |
+|   99.00 |   100 |  100 |
+|   99.00 |   100 |  100 |
+|   88.00 |    99 |   99 |
++---------+-------+------+
+
+mysql> select * from student;
++------+------+-------+---------+------+
+| name | sn   | mysql | english | java |
++------+------+-------+---------+------+
+| lily | NULL |  NULL |    NULL | NULL |
+| NULL | NULL |   100 |   99.00 |  100 |
+| NULL | NULL |   100 |   99.00 |  100 |
+| NULL | NULL |    99 |   88.00 |   99 |
++------+------+-------+---------+------+
+4 rows in set (0.00 sec)
+
+//as设置别名
+select english+mysql+java as total_grade from student;
++-------------+
+| total_grade |
++-------------+
+|        NULL |
+|      299.00 |
+|      299.00 |
+|      286.00 |
++-------------+
+4 rows in set (0.00 sec)
+
+//去除重复distinct
+select distinct java from student;
++------+
+| java |
++------+
+| NULL |
+|  100 |
+|   99 |
++------+
+
+//插入数据
+mysql> insert into student (mysql,english,java)
+    ->  values(100,99,100),
+    -> (99,88,99),
+    -> (99,78,88),
+    -> (89,78,98),
+    -> (87,80,97)
+    -> ;
+	
+//按英语成绩降序排列	
+	 select * from student order by english desc;
++------+------+-------+---------+------+
+| name | sn   | mysql | english | java |
++------+------+-------+---------+------+
+| NULL | NULL |   100 |   99.00 |  100 |
+| NULL | NULL |   100 |   99.00 |  100 |
+| NULL | NULL |   100 |   99.00 |  100 |
+| NULL | NULL |    99 |   88.00 |   99 |
+| NULL | NULL |    99 |   88.00 |   99 |
+| NULL | NULL |    87 |   80.00 |   97 |
+| NULL | NULL |    99 |   78.00 |   88 |
+| NULL | NULL |    89 |   78.00 |   98 |
+| lily | NULL |  NULL |    NULL | NULL |
++------+------+-------+---------+------+
+9 rows in set (0.07 sec)
+
+//条件查询
+mysql> select * from student where mysql = 100 && english >= 80;
++------+------+-------+---------+------+
+| name | sn   | mysql | english | java |
++------+------+-------+---------+------+
+| NULL | NULL |   100 |   99.00 |  100 |
+| NULL | NULL |   100 |   99.00 |  100 |
+| NULL | NULL |   100 |   99.00 |  100 |
++------+------+-------+---------+------+
+3 rows in set (0.00 sec)
+
+//插入数据
+mysql> insert into student(name) values('lucy');
+Query OK, 1 row affected (0.08 sec)
+
+mysql> insert into student(name) values('james');
+Query OK, 1 row affected (0.07 sec)
+
+mysql> select * from student;
++-------+------+-------+---------+------+
+| name  | sn   | mysql | english | java |
++-------+------+-------+---------+------+
+| lily  | NULL |  NULL |    NULL | NULL |
+| NULL  | NULL |   100 |   99.00 |  100 |
+| NULL  | NULL |   100 |   99.00 |  100 |
+| NULL  | NULL |    99 |   88.00 |   99 |
+| NULL  | NULL |   100 |   99.00 |  100 |
+| NULL  | NULL |    99 |   88.00 |   99 |
+| NULL  | NULL |    99 |   78.00 |   88 |
+| NULL  | NULL |    89 |   78.00 |   98 |
+| NULL  | NULL |    87 |   80.00 |   97 |
+| lucy  | NULL |  NULL |    NULL | NULL |
+| james | NULL |  NULL |    NULL | NULL |
++-------+------+-------+---------+------+
+11 rows in set (0.00 sec)
+
+//like模糊查询 %匹配任意多个相似字符
+mysql> select * from student where name like 'l%';
++------+------+-------+---------+------+
+| name | sn   | mysql | english | java |
++------+------+-------+---------+------+
+| lily | NULL |  NULL |    NULL | NULL |
+| lucy | NULL |  NULL |    NULL | NULL |
++------+------+-------+---------+------+
+2 rows in set (0.00 sec)
+
+//limit分页查询
+mysql> select * from student limit 1,3;
++------+------+-------+---------+------+
+| name | sn   | mysql | english | java |
++------+------+-------+---------+------+
+| NULL | NULL |   100 |   99.00 |  100 |
+| NULL | NULL |   100 |   99.00 |  100 |
+| NULL | NULL |    99 |   88.00 |   99 |
++------+------+-------+---------+------+
+3 rows in set (0.00 sec)
+
+//as设置别名,按总成绩降序排列
+mysql> select name,sn,mysql
+    -> +english+java as total_score from student order by total_score desc;
++-------+------+-------------+
+| name  | sn   | total_score |
++-------+------+-------------+
+| NULL  | NULL |      299.00 |
+| NULL  | NULL |      299.00 |
+| NULL  | NULL |      299.00 |
+| NULL  | NULL |      286.00 |
+| NULL  | NULL |      286.00 |
+| NULL  | NULL |      265.00 |
+| NULL  | NULL |      265.00 |
+| NULL  | NULL |      264.00 |
+| lily  | NULL |        NULL |
+| lucy  | NULL |        NULL |
+| james | NULL |        NULL |
++-------+------+-------------+
+11 rows in set (0.00 sec)
